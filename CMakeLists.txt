@@ -686,6 +686,11 @@ if(BUILD_TOOLS)
 
   install(TARGETS osrm-io-benchmark DESTINATION bin)
 
+  add_executable(osrm-rtree-dump src/tools/rtree-dump.cpp $<TARGET_OBJECTS:UTIL>)
+  target_link_libraries(osrm-rtree-dump ${BOOST_BASE_LIBRARIES})
+
+  install(TARGETS osrm-rtree-dump DESTINATION bin)
+
   find_package(Shapefile) # package libshp-dev
   if(SHAPEFILE_FOUND AND (Boost_VERSION VERSION_GREATER 106000 OR ENABLE_MASON))
     add_executable(osrm-extract-conditionals src/tools/extract-conditionals.cpp $<TARGET_OBJECTS:UTIL>)
