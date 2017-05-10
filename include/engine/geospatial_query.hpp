@@ -495,7 +495,7 @@ template <typename RTreeT, typename DataFacadeT> class GeospatialQuery
 
     /**
      * Checks to see if the edge weights are valid.  We might have an edge,
-     * but a traffic update might set the speed to 0 (weight == INVALID_EDGE_WEIGHT).
+     * but a traffic update might set the speed to 0 (weight == INVALID_SEGMENT_WEIGHT).
      * which means that this edge is not currently traversible.  If this is the case,
      * then we shouldn't snap to this edge.
      */
@@ -508,7 +508,7 @@ template <typename RTreeT, typename DataFacadeT> class GeospatialQuery
         const std::vector<EdgeWeight> forward_weight_vector =
             datafacade.GetUncompressedForwardWeights(segment.data.packed_geometry_id);
 
-        if (forward_weight_vector[segment.data.fwd_segment_position] != INVALID_EDGE_WEIGHT)
+        if (forward_weight_vector[segment.data.fwd_segment_position] != INVALID_SEGMENT_WEIGHT)
         {
             forward_edge_valid = segment.data.forward_segment_id.enabled;
         }
@@ -516,7 +516,7 @@ template <typename RTreeT, typename DataFacadeT> class GeospatialQuery
         const std::vector<EdgeWeight> reverse_weight_vector =
             datafacade.GetUncompressedReverseWeights(segment.data.packed_geometry_id);
         if (reverse_weight_vector[reverse_weight_vector.size() - segment.data.fwd_segment_position -
-                                  1] != INVALID_EDGE_WEIGHT)
+                                  1] != INVALID_SEGMENT_WEIGHT)
         {
             reverse_edge_valid = segment.data.reverse_segment_id.enabled;
         }

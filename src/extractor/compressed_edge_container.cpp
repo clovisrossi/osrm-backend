@@ -272,9 +272,9 @@ unsigned CompressedEdgeContainer::ZipEdges(const EdgeID f_edge_id, const EdgeID 
     constexpr DatasourceID LUA_SOURCE = 0;
 
     segment_data->nodes.emplace_back(first_node.node_id);
-    segment_data->fwd_weights.emplace_back(INVALID_EDGE_WEIGHT);
+    segment_data->fwd_weights.emplace_back(INVALID_SEGMENT_WEIGHT);
     segment_data->rev_weights.emplace_back(first_node.weight);
-    segment_data->fwd_durations.emplace_back(INVALID_EDGE_WEIGHT);
+    segment_data->fwd_durations.emplace_back(INVALID_SEGMENT_DURATION);
     segment_data->rev_durations.emplace_back(first_node.duration);
     segment_data->datasources.emplace_back(LUA_SOURCE);
 
@@ -297,9 +297,9 @@ unsigned CompressedEdgeContainer::ZipEdges(const EdgeID f_edge_id, const EdgeID 
 
     segment_data->nodes.emplace_back(last_node.node_id);
     segment_data->fwd_weights.emplace_back(last_node.weight);
-    segment_data->rev_weights.emplace_back(INVALID_EDGE_WEIGHT);
+    segment_data->rev_weights.emplace_back(INVALID_SEGMENT_WEIGHT);
     segment_data->fwd_durations.emplace_back(last_node.duration);
-    segment_data->rev_durations.emplace_back(INVALID_EDGE_WEIGHT);
+    segment_data->rev_durations.emplace_back(INVALID_SEGMENT_DURATION);
     segment_data->datasources.emplace_back(LUA_SOURCE);
 
     return zipped_geometry_id;
