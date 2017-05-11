@@ -30,7 +30,7 @@ Feature: Testbot - Handle ferry routes
             | fg    |         | ferry | 0:10     |
             | jk    |         | ferry | 1:00     |
             | no    |         | ferry | 24:00    |
-            | rs    |         | ferry | 96:00    |
+            | rs    |         | ferry | 72:00    |
 
         When I route I should get
             | from | to | route | time        |
@@ -38,7 +38,7 @@ Feature: Testbot - Handle ferry routes
             | f    | g  | fg,fg | 600s +-1    |
             | j    | k  | jk,jk | 3600s +-1   |
             | n    | o  | no,no | 86400s +-1  |
-            | r    | s  | rs,rs | 345600s +-1 |
+            | r    | s  | rs,rs | 2592000 +-1 |
 
     @todo
     Scenario: Testbot - Week long ferry routes
