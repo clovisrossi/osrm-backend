@@ -3,6 +3,7 @@
 #include "extractor/geojson_debug_policies.hpp"
 #include "util/geojson_debug_logger.hpp"
 
+#include "util/assert.hpp"
 #include "util/bearing.hpp"
 #include "util/coordinate_calculation.hpp"
 #include "util/log.hpp"
@@ -369,8 +370,20 @@ IntersectionView IntersectionGenerator::TransformIntersectionShapeIntoView(
               std::end(intersection_view),
               std::mem_fn(&IntersectionViewData::CompareByAngle));
 
-    BOOST_ASSERT(intersection_view[0].angle >= 0. &&
-                 intersection_view[0].angle < std::numeric_limits<double>::epsilon());
+    // Move entering_via_edge to intersection front
+    auto reverse_entering_via_edge = node_based_graph.FindEdge(node_at_intersection, previous_node);
+    auto entering_via_it = std::find_if(
+        intersection_view.begin(),
+        intersection_view.end(),
+        [reverse_entering_via_edge](auto &road) { return road.eid == reverse_entering_via_edge; });
+    if (entering_via_it != intersection_view.begin() && entering_via_it != intersection_view.end())
+    {
+        std::swap(*entering_via_it, intersection_view.front());
+    }
+
+    OSRM_ASSERT(intersection_view[0].angle >= 0. &&
+                    intersection_view[0].angle < std::numeric_limits<double>::epsilon(),
+                coordinates[node_at_intersection]);
 
     return intersection_view;
 }
