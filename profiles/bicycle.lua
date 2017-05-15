@@ -415,7 +415,10 @@ function way_function (way, result)
       result.backward_speed = profile.bicycle_speeds["cycleway"]
     end
   elseif cycleway_left and profile.cycleway_tags[cycleway_left] and cycleway_right and profile.cycleway_tags[cycleway_right] then
-    -- prevent implied
+    result.forward_mode = mode.cycling
+    result.backward_mode = mode.cycling
+    result.forward_speed = profile.bicycle_speeds["cycleway"]
+    result.backward_speed = profile.bicycle_speeds["cycleway"]
   elseif cycleway_left and profile.cycleway_tags[cycleway_left] then
     if impliedOneway then
       result.forward_mode = mode.inaccessible
@@ -454,9 +457,9 @@ function way_function (way, result)
     has_cycleway_right = true
   elseif cycleway_left and profile.cycleway_tags[cycleway_left] then
     has_cycleway_left = true
-    has_cycleway_right = true
+    has_cycleway_right = false
   elseif cycleway_right and profile.cycleway_tags[cycleway_right] then
-    has_cycleway_left = true
+    has_cycleway_left = false
     has_cycleway_right = true
   end
   if has_cycleway_right and
@@ -485,26 +488,34 @@ function way_function (way, result)
 
   -- convert duration into cyclability
   if properties.weight_name == 'cyclability' then
+      io.write(has_cycleway_left and "true" or "fase", ',', has_cycleway_right and "true" or "fase", '\n')
       local is_unsafe = profile.safety_penalty < 1 and profile.unsafe_highway_list[data.highway]
+      local forward_is_unsafe = not has_cycleway_left and is_unsafe
+      local backward_is_unsafe = not has_cycleway_right and is_unsafe
       local is_undesireable = data.highway == "service" and profile.service_penalties[service]
-      local penalty = 1.0
-      if is_unsafe then
-        penalty = math.min(penalty, profile.safety_penalty)
+      local forward_penalty = 1.0
+      local backward_penalty = 1.0
+      if forward_is_unsafe then
+        forward_penalty = math.min(forward_penalty, profile.safety_penalty)
+      end
+      if backward_is_unsafe then
+        backward_penalty = math.min(backward_penalty, profile.safety_penalty)
       end
       if is_undesireable then
-        penalty = math.min(penalty, profile.service_penalties[service])
+        forward_penalty = math.min(forward_penalty, profile.service_penalties[service])
+        backward_penalty = math.min(backward_penalty, profile.service_penalties[service])
       end
 
       if result.forward_speed > 0 then
         -- convert from km/h to m/s
-        result.forward_rate = result.forward_speed / 3.6 * penalty
+        result.forward_rate = result.forward_speed / 3.6 * forward_penalty
       end
       if result.backward_speed > 0 then
         -- convert from km/h to m/s
-        result.backward_rate = result.backward_speed / 3.6 * penalty
+        result.backward_rate = result.backward_speed / 3.6 * backward_penalty
       end
       if result.duration > 0 then
-        result.weight = result.duration / penalty
+        result.weight = result.duration / forward_penalty
       end
   end
 
